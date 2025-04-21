@@ -1,21 +1,31 @@
+
 import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-
 class Arbuz:
-    def __init__(self, file_path):
-        self.file_path = file_path
-        self.df = None
+    def __init__(self):
+        self.name = pd.read_csv('var10.csv')
 
-    def load_data(self):
-        """Загружает данные из CSV """
-        self.df = pd.read_csv(self.file_path)
-        print("Данные загружены успешно!")
+    def divide(self):
+        self.filtered_df_min = self.name[self.name['Сумма cash-back'] == 0]
+        self.filtered_df_max = self.name[self.name['Сумма cash-back'] > 0]
+        self.filtered_df_min.to_csv('cash_zero.csv', index=False)
+        self.filtered_df_max.to_csv('cash_ne_zero.csv', index=False) 
 
-    def filter_cash(self, back_to_keep):
-        """Фильтрует данные по списку штатов"""
-        if self.df is None:
-            print("Ошибка: данные не загружены!")
-            return None
-        self.df = self.df[self.df["CASH"].isin(back_to_keep)]
-        print("Фильтрация завершена!")
+
+    def __invert__(self):
+        self.df_no_duplicates = self.name.drop_duplicates()
+        self.a = len(self.name)
+        self.b = len(self.df_no_duplicates)
+        self.duplicates = self.a - self.b
+        print("Кол-во дубликатов - ",self.duplicates )
+        self.df_no_duplicates.to_csv('df_no_duplicates.csv', index=False) 
+
+
+    def __del__(self):
+        print("del")
+
+def main():
+    a = Arbuz()
+    a.divide()
+    ~a
+if __name__ == "__main__":
+    main()
